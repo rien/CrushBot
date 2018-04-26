@@ -1,0 +1,22 @@
+name: crushbot
+version: 0.1.0
+
+authors:
+  - Rien Maertens <maertensrien@gmail.com>
+
+targets:
+  crushbot:
+    main: src/crushbot.cr
+# description: |
+#   Short description of crushbot
+
+# dependencies:
+#   pg:
+#     github: will/crystal-pg
+#     version: "~> 0.5"
+
+# development_dependencies:
+#   webmock:
+#     github: manastech/webmock.cr
+
+# license: MIT
