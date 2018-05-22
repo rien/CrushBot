@@ -2,6 +2,16 @@ require "models"
 
 class Overview
 
+  getter planets
+  getter planet_distances
+  getter own_planets
+  getter free_planets
+  getter enemy_planets
+  getter safe_planets
+  getter endangered_planets
+  getter conquerable_planets
+  getter state
+
   @state : State?
 
   def initialize
@@ -10,6 +20,7 @@ class Overview
     @own_planets = [] of Planet
     @free_planets = [] of Planet
     @enemy_planets = [] of Planet
+    @conquerable_planets = [] of Planet
     @safe_planets = [] of Planet
     @endangered_planets = [] of Planet
     @state = nil
@@ -31,6 +42,7 @@ class Overview
     @own_planets = @planets.values.select{|p| p.owner == 1}
     @free_planets = @planets.values.select{|p| p.owner.nil?}
     @enemy_planets = @planets.values.select{|p| !(p.owner.nil? || p.owner == 1)}
+    @conquerable_planets = @free_planets + @enemy_planets
 
     @own_planets.each do |planet|
       planet.state = PlanetState::Safe
@@ -57,6 +69,25 @@ class Overview
         @endangered_planets << planet
       end
     end
+  end
+
+  def closest_safe_planets(planet)
+    @safe_planets.reject{|p| p == planet}
+                .map{|p| {planet, @planet_distances[{planet.name, p.name}]}}
+                .sort_by{|_,d| d}
+  end
+
+  def closest_captureable_planets(planet)
+    closest = [] of Tuple(Planet, Float32)
+    @conquerable_planets.each do |p|
+      dist = @planet_distances[{planet.name, p.name}]
+      other_ships = p.ship_count
+      other_ships += dist unless p.owner.nil?
+      if planet.ship_count + dist >= other_ships
+        closest << {p, dist}
+      end
+    end
+    closest.sort_by{|_,d| d}
   end
 
 

@@ -28,6 +28,10 @@ class Planet
   def to_s(io)
     io << "Planet #{@name}"
   end
+
+  def <=>(other)
+    other.ship_count - self.ship_count
+  end
 end
 
 class Expedition
